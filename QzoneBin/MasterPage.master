@@ -1,0 +1,67 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPage" %>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head runat="server">
+
+    <title></title>
+
+    <asp:ContentPlaceHolder ID="head" runat="server">
+
+    </asp:ContentPlaceHolder>
+
+ 
+    </style>
+
+</head>
+
+<body>
+
+    <form id="form1" runat="server">
+
+    <div>
+
+        <div style="background: #1F1F1F; height: 40px; font-weight: bold; font-size: 20px; color: white; font-family: Verdana">
+            
+            &nbsp&nbsp&nbsp<img  runat ="server"  src="/img/logo.png" />
+            <asp:ImageButton ID="imbtnPersonality" runat="server" BorderStyle="None" ImageUrl="~/img/personality.png" OnClick="imbtnPersonality_Click" />
+            <asp:ImageButton ID="imgbtnMyhome"  runat="server" BorderStyle="None" ImageUrl="~/img/myhome.png" />
+            <asp:ImageButton ID="imgbutFriends" runat="server" BorderStyle="None" ImageUrl="~/img/friends.png" />
+            <asp:ContentPlaceHolder ID="GuestUsername" runat="server" > 添加adsfasf账号 </asp:ContentPlaceHolder>
+            <asp:ImageButton ID ="imgbtnExit" runat="server" BorderStyle ="None" ImageUrl="~/img/exit.png" />
+            <asp:ImageButton ID="imgbtnSetting" runat ="server" BorderStyle ="None" ImageUrl="~/img/set.png" />
+
+            
+   </div>
+        <div style ="height:100px;" >
+            <asp:ContentPlaceHolder ID="HostUsername" runat="server" > 添加一个标签,访问对象（目前空间显示）的账号 </asp:ContentPlaceHolder><br/>
+            <asp:ContentPlaceHolder ID="HostSignature" runat="server" > 添加一个标签,签名档 </asp:ContentPlaceHolder> <br /><br />
+            <asp:ContentPlaceHolder ID="HostHead" runat="server" >aspimg载入头像</asp:ContentPlaceHolder>
+            <asp:ContentPlaceHolder ID="HostQzonename" runat="server" >标签</asp:ContentPlaceHolder>
+            <asp:ContentPlaceHolder ID="HostGrade" runat="server" >label等级标签</asp:ContentPlaceHolder>
+        </div>
+        <br /><br />
+        <div style="background: #FFFFFF; height:30px; font-weight:bold; font-size:large;color:blue;font-family:Verdana">
+            <a href="">主页</a>&nbsp&nbsp<a href="">说说</a>&nbsp&nbsp<a href="">日志</a>&nbsp&nbsp<a href="">相册</a>&nbsp&nbsp<a href="">留言板</a>&nbsp&nbsp<a href="">访客功能</a> 
+        </div>
+
+        <br />
+
+        <br />
+
+        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+          主体内容
+        </asp:ContentPlaceHolder>
+
+        <br />
+        <div  align="center"><img src="img/boot.png" /></div>
+        <em>Copyright © Sky</em>
+
+    </div>
+
+    </form>
+
+</body>
+
+</html>
