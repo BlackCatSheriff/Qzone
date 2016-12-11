@@ -63,9 +63,11 @@
 
         </tr>  
               <tr>  
-            <td class="auto-style5">E-mail：&nbsp&nbsp&nbsp <asp:TextBox ID ="txtEmail" runat ="server" MaxLength ="20" ></asp:TextBox>
+            <td class="auto-style5">E-mail:&nbsp&nbsp&nbsp <asp:TextBox ID ="txtEmail" runat ="server" MaxLength ="20" ></asp:TextBox>
+                
                 <asp:RegularExpressionValidator ID="RegularExpressionValidator_Email" runat="server" ErrorMessage="请输入合法邮件地址！" ControlToValidate ="txtEmail" ForeColor ="Red" ValidationExpression ="^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"></asp:RegularExpressionValidator>
-                <br />
+               <br />(务必确保E-mail正确性，以找回密码)
+                 <br />
                 <br />
                   </td>  
     

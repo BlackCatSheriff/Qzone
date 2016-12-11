@@ -14,6 +14,16 @@ public partial class Regester : System.Web.UI.Page
     public string qq;
     protected void Page_Load(object sender, EventArgs e)
     {
+        if(Session["Vnum"]==null)
+        {
+            this.imgValidator.ImageUrl = "~/ValidatorPage.aspx?" + DateTime.Now.Millisecond.ToString();      //验证码刷新
+        }
+        /*
+        else
+        {
+            Response.Write("<script>alert('"+Session["Vnum"].ToString()+"')</script>");
+        }
+        */
 
     }
 
@@ -39,19 +49,15 @@ public partial class Regester : System.Web.UI.Page
                 }
                 else
                 {
-                HttpCookie cookieUserQQ = new HttpCookie("userQQ", qq); //创建帐号的cookie实例
-                HttpCookie cookieUserName = new HttpCookie("userNick", txtUsername.Text .Trim ()); //创建帐号的cookie实例
-                HttpCookie cookiePassWord = new HttpCookie("passWord",class_Operate.EncryptToSHA1(txtPassword1.Text.Trim ()) );
-                         cookieUserName.Expires = DateTime.Now.AddDays(2); //设置帐号cookie的过期时间，当前时间算往后推 
-                         cookiePassWord.Expires = DateTime.Now.AddMinutes(5);  //设置密码5分钟过期,当前时间算往后推 
-                         cookieUserQQ.Expires = DateTime.Now.AddDays(2);
-                          Response.Cookies.Add(cookieUserQQ);
-                          Response.Cookies.Add(cookieUserName);
-                          Response.Cookies.Add(cookiePassWord);
-                Session["isFirst"] = 1;
+             
+                class_Operate inputCookies = new class_Operate();
+                
+               int xx= inputCookies.WriteCookies(qq, txtUsername.Text.Trim(), txtPassword1.Text.Trim(), "~/img/userHead/base.png");
 
-                        Response.Write("<script>window.alert('注册成功！');location.href='regsuccess.aspx';</script>");
-                }
+                Session["isFirst"] = "1";
+                
+                Response.Write("<script language='javascript'>window.alert('注册成功"+xx.ToString()+"session"+ Session["isFirst"].ToString() + "');window.location='regsuccess.aspx'</script>");
+            }
 
             }
         
@@ -67,16 +73,17 @@ public partial class Regester : System.Web.UI.Page
     public int Register(string Username, string Password, string Email, string Phone)    //写入到数据库Users
     {
          qq = product_qq();
-        string time = DateTime.Now.ToString();
+        string time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         string Encrypt = class_Operate .EncryptToSHA1(Password);
         string sqlconn = class_Operate.str;
         string headimg = "~/img/userHead/base.png"; 
         SqlConnection connection = new SqlConnection(sqlconn);
         connection.Open();
-        string sqlstr = "insert into Users(Uqq,Unick,Upwd,Uemail,Uphone,Uheadimg,Ustarttime) valuse (@Uqq,@Unick,@Upwd,@Uemail,@Uphone,@Uheadimg,@Ustarttime)";
+        string sqlstr = "insert into Users(Uqq,Unick,Upwd,Uemail,Uphone,Uheadimg,Ustarttime,UzoneName,UzoneSign,UzoneGrade,Usignin,UsignNow) VALUES  (@Uqq,@Unick,@Upwd,@Uemail,@Uphone,@Uheadimg,@Ustarttime,@UzoneName,@UzoneSign,@UzoneGrade,@Usignin,@UsignNow)";
         SqlCommand cmd = new SqlCommand(sqlstr, connection);
         cmd.Parameters.Clear();
 
+       
         cmd.Parameters.Add("@Uqq", SqlDbType.Text);
         cmd.Parameters["@Uqq"].Value = qq;
 
@@ -98,12 +105,28 @@ public partial class Regester : System.Web.UI.Page
         cmd.Parameters.Add("@Uheadimg", SqlDbType.Text);
         cmd.Parameters["@Uheadimg"].Value = headimg;
 
+        cmd.Parameters.Add("@UzoneName", SqlDbType.NVarChar);
+        cmd.Parameters["@UzoneName"].Value = Username;
+
+        cmd.Parameters.Add("@UzoneSign", SqlDbType.NVarChar);
+        cmd.Parameters["@UzoneSign"].Value = "我的空间自己主宰！";
+
+        cmd.Parameters.Add("@UzoneGrade", SqlDbType.Char);
+        cmd.Parameters["@UzoneGrade"].Value ="0";
+
+        cmd.Parameters.Add("@Usignin", SqlDbType.Int );
+        cmd.Parameters["@Usignin"].Value = 0;
+
+
+        cmd.Parameters.Add("@UsignNow", SqlDbType.VarChar);
+        cmd.Parameters["@UsignNow"].Value = "0";
+
         int i=cmd.ExecuteNonQuery();
         connection.Close();
-        if (i == 0)
-            return 0;
-        else          
+        if (i == 1)
             return 1;
+        else          
+            return 0;
        
           
     }

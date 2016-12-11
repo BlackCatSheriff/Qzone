@@ -13,23 +13,33 @@ img{width:100px;height:100px}
 <body>
     <form id="form1" runat="server">
     <div>
-    <h2>欢迎你，<asp:Label ID="lbluserNick"  runat ="server"  Text =""></asp:Label>你的QQ号为：<asp:Label ID="lbluserQQ" runat ="server" Text ="" Font-Bold="true" Font-Size="Larger" ForeColor="Red"></asp:Label></h2>
+    <h2>欢迎你，<asp:Label ID="lbluserNick"  runat ="server"  Text =""></asp:Label>&nbsp;&nbsp; 你的QQ号为：<asp:Label ID="lbluserQQ" runat ="server" Text ="" Font-Bold="true" Font-Size="Larger" ForeColor="Red"></asp:Label></h2>
    
         <br />
         <h3>基本资料：</h3><br />
+        
+      <div class="content" id ="divbooksearch" runat ="server" visible ="true" ><!--主面板的内容放在content内，content为一级版面，不要轻易编辑该层内容-->
+         <div id="iframe-wrap">
+        <iframe name="inner1" id="iframe" runat ="server"  src="editHeadimg.aspx" width="550px" height="110px" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes" >
+        </iframe>
+        <style>
+		
+		#iframe-wrap { height: 100%; overflow: visible; position: relative; top: 0; z-index: 0 }
+		.tablet-width iframe { height: 100px!important }
+		.mobile-width iframe { height: 100px!important }
+		.mobile-width-2 iframe { height: 100px!important }
+		.mobile-width-3 iframe { height: 100px!important }
+		</style>
+    </div>
+         <!--嵌入外部html-->
+         
+		</div> <!--一级版面-->
+
         <table>
-            <tr>
-                <td>
-                <asp:Image ID ="imgUserhead" runat="server" BorderColor="Black" ImageUrl="" CssClass="img"/>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    <asp:FileUpload ID ="FileUpload1" runat ="server"  BorderStyle="Outset"  />
-                    
-                   
-                    &nbsp&nbsp<asp:Button ID="btnChangeHead" runat="server" Text ="修改" BorderStyle="Outset" OnClick="btnChangeHead_Click" />
-                </td>
-            </tr>
+           
             <tr>
                <td>昵称:</td> <td><asp:TextBox ID ="txtUserNike" runat ="server"  MaxLength="15" Text=""></asp:TextBox></td>
-                <td>性别：</td><td><asp:DropDownList ID ="ddlSex" runat ="server" AutoPostBack="True"  ><asp:ListItem Selected="True">男</asp:ListItem><asp:ListItem>女</asp:ListItem></asp:DropDownList></td>
+                <td>性别：</td><td><asp:DropDownList ID ="ddlSex" runat ="server" AutoPostBack="false"  ><asp:ListItem Selected="True">男</asp:ListItem><asp:ListItem>女</asp:ListItem></asp:DropDownList></td>
             </tr>
             <tr>
                 <td>生日:</td><td><asp:TextBox ID ="txtBirthday" runat ="server" Text ="" MaxLength="10"></asp:TextBox></td>

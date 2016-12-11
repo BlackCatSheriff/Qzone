@@ -1,25 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class Login : System.Web.UI.Page
 {
-    
+
     protected void Page_Load(object sender, EventArgs e)
     {
-        try                                                            //处理程序中不存在 Session["Succeed_name"] 的情况
+        if (!IsPostBack)
         {
-            LtxtUsername.Text = Session["Succeed_name"].ToString();     //显示刚刚注册的用户名
-        }
-        catch
+           
+            if (Request.Cookies["userQQ"]!=null  && Request.Cookies["passWord"]!=null)
         {
-            return;
+            //判断qq和密码是否匹配
+          int judge= class_Operate.isRght(Request.Cookies["userQQ"].Value, Request.Cookies["passWord"].Value);
+            if(judge==1)
+            {
+                Response.Redirect("comment.aspx");
+                
+            }
+           
         }
-        
+       else if(Request.Cookies["userQQ"] != null && Request.Cookies["ImgPath"] != null)
+        {
+           
+            
+                imgUserImg.ImageUrl = Request.Cookies["ImgPath"].Value;
+                imgUserImg.Visible = true;
+                LtxtUsername.Text = Request.Cookies["userQQ"].Value;
+                lblUserNike.Text = "欢迎你，" + HttpUtility.UrlDecode(Request.Cookies["userNick"].Value, Encoding.GetEncoding("utf-8"));
+                lblUserNike.Visible = true;
+
+
+
+           
+        }
+        }
 
 
     }
@@ -29,7 +51,7 @@ public partial class Login : System.Web.UI.Page
         
         if (LtxtUsername.Text.Trim() == "" && LtxtPassword.Text.Trim() == "")
         {
-            Response.Write("<script>alert('登录失败，请正确填写用户名、密码！')</script>");
+            Response.Write("<script>alert('登录失败，请正确填写QQ号、密码！')</script>");
             return;
         }
         else if (Session["Vnum"].ToString() != txtValidator.Text.Trim())
@@ -39,24 +61,7 @@ public partial class Login : System.Web.UI.Page
         }
         else
         {
-            /*
-            if (mylogin.Login(LtxtUsername.Text.Trim(), LtxtPassword.Text.Trim()) != 1)
-            {
-                Response.Write("<script>alert('登录失败，请正确填写用户名、密码！')</script>");
-                return;
-
-            }
-            else
-            {
-                
-                Session.Clear();      //清空全部登录类的页间值
-                Response.Write("<script>window.alert('登录成功！');location.href='information.aspx';</script>");
-              
-
-            }
-            */
-            //tmp = mylogin.Encryption(LtxtPassword.Text.Trim());
-            //Response.Write(tmp);
+           
             if (Logining(LtxtUsername.Text.Trim(),LtxtPassword .Text .Trim ()) != 1)
             {
                 Response.Write("<script>alert('登录失败，请正确填写用户名、密码！')</script>");
@@ -65,18 +70,19 @@ public partial class Login : System.Web.UI.Page
             }
             else
             {
+                Session.Clear();
+                //更新cookies
+                bool a=writCookies(LtxtUsername.Text.Trim(), LtxtPassword.Text.Trim());
+                if(a)
+                {
+                   string url = "home.aspx?uqq=" + LtxtUsername.Text.Trim();
+                    Response.Write("<script>window.alert('登录成功！');window.location='" + url + "'</script>");
+                }
+                
 
-
-                Session.Clear();      //清空全部登录类的页间值
-                Session["Succeed_name"] = LtxtUsername.Text.Trim();
-                 Response.Write("<script>window.alert('登录成功！');location.href='Main.aspx';</script>");
-
-
+                else
+                    Response.Write("<script>window.alert('cookies fail！');</script>");
             }
-
-
-
-
 
         }
 
@@ -91,13 +97,45 @@ public partial class Login : System.Web.UI.Page
     {
         Response.Redirect("~/Regester.aspx");
     }
-    public int  Logining(string Username ,string Password )   //登录验证函数
+    public int  Logining(string UserQQ ,string Password )   //登录验证函数
     {
 
-        string sql = "select Username , Password from Users where Username ='" + Username + "' and Password =upper(substring(sys.fn_sqlvarbasetostr(HashBytes('SHA1', '" + Password + "')), 3, 32))";
-        DataTable dt = new DataTable();
-        dt = class_Operate.SelectT(sql);
-        if (dt.Rows.Count != 0) return 1;
-        else return 0;
+        string pwd= class_Operate.EncryptToSHA1(Password);
+
+        if (class_Operate.isRght(UserQQ, pwd) != 1)
+             return 0;
+        else return 1;
+
     }
-}
+
+    protected void btnSeekPwd_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("~/forgetpwd.aspx");
+        
+    }
+
+    private bool writCookies(string Uqq,string Upwd)
+    {
+
+        string sql = "select Unick,Uheadimg from Users where Uqq='" + Uqq+"'";
+        DataTable dt = class_Operate.SelectT(sql);
+        if (dt.Rows.Count > 0)
+        {
+            string unike = dt.Rows[0][0].ToString();
+            string uimgpath = dt.Rows[0][1].ToString();
+            class_Operate inputCookies = new class_Operate();
+            if (inputCookies.WriteCookies(Uqq, unike, Upwd, uimgpath) == 1)
+                return true;
+            else return false;
+
+
+        }
+        else
+            return false;
+
+   
+    }
+
+    
+
+    }
