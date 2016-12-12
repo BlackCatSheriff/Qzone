@@ -18,12 +18,7 @@ public partial class Regester : System.Web.UI.Page
         {
             this.imgValidator.ImageUrl = "~/ValidatorPage.aspx?" + DateTime.Now.Millisecond.ToString();      //验证码刷新
         }
-        /*
-        else
-        {
-            Response.Write("<script>alert('"+Session["Vnum"].ToString()+"')</script>");
-        }
-        */
+       
 
     }
 
@@ -52,9 +47,9 @@ public partial class Regester : System.Web.UI.Page
              
                 class_Operate inputCookies = new class_Operate();
                 
-               int xx= inputCookies.WriteCookies(qq, txtUsername.Text.Trim(), txtPassword1.Text.Trim(), "~/img/userHead/base.png");
+               int xx= inputCookies.WriteCookies(qq, txtUsername.Text.Trim(), txtPassword1.Text.Trim(), "~/img/userHead/base.png");              //Cookies 发送到客户端
 
-                Session["isFirst"] = "1";
+                Session["isFirst"] = "1";                    //标志第一次登陆，用来判定是否可以进入到regsuccess界面，只有第一次可以进去，其他的资料修改专门有修改页面
                 
                 Response.Write("<script language='javascript'>window.alert('注册成功"+xx.ToString()+"session"+ Session["isFirst"].ToString() + "');window.location='regsuccess.aspx'</script>");
             }
@@ -65,26 +60,26 @@ public partial class Regester : System.Web.UI.Page
     }
 
 
-    protected void imgValidator_Click(object sender, ImageClickEventArgs e)
+    protected void imgValidator_Click(object sender, ImageClickEventArgs e)  
     {
         this.imgValidator.ImageUrl = "~/ValidatorPage.aspx?" + DateTime.Now.Millisecond.ToString();      //验证码刷新
 
-    }
+    } 
     public int Register(string Username, string Password, string Email, string Phone)    //写入到数据库Users
     {
          qq = product_qq();
-        string time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-        string Encrypt = class_Operate .EncryptToSHA1(Password);
+        string time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");                 //格式化时间输入数据库
+        string Encrypt = class_Operate .EncryptToSHA1(Password);               //SHA1加密
         string sqlconn = class_Operate.str;
-        string headimg = "~/img/userHead/base.png"; 
+        string headimg = "~/img/userHead/base.png";                             //初始化头像
         SqlConnection connection = new SqlConnection(sqlconn);
         connection.Open();
-        string sqlstr = "insert into Users(Uqq,Unick,Upwd,Uemail,Uphone,Uheadimg,Ustarttime,UzoneName,UzoneSign,UzoneGrade,Usignin,UsignNow) VALUES  (@Uqq,@Unick,@Upwd,@Uemail,@Uphone,@Uheadimg,@Ustarttime,@UzoneName,@UzoneSign,@UzoneGrade,@Usignin,@UsignNow)";
+        string sqlstr = "insert into Users(Uqq,Unick,Upwd,Uemail,Uphone,Uheadimg,Ustarttime,UzoneName,UzoneSign,UzoneGrade,Usignin,UsignNow) VALUES  (@Uqq,@Unick,@Upwd,@Uemail,@Uphone,@Uheadimg,@Ustarttime,@UzoneName,@UzoneSign,@UzoneGrade,@Usignin,@UsignNow)";    //参数化插入数据
         SqlCommand cmd = new SqlCommand(sqlstr, connection);
         cmd.Parameters.Clear();
 
        
-        cmd.Parameters.Add("@Uqq", SqlDbType.Text);
+        cmd.Parameters.Add("@Uqq", SqlDbType.Text);                         //规定每一数据的插入类型
         cmd.Parameters["@Uqq"].Value = qq;
 
         cmd.Parameters.Add("@Unick", SqlDbType.Text);
@@ -131,7 +126,7 @@ public partial class Regester : System.Web.UI.Page
           
     }
     
-    public string  product_qq()
+    public string  product_qq()      //随机生成QQ号
     {
         int tmpqq;
         string sql = "";
@@ -139,15 +134,15 @@ public partial class Regester : System.Web.UI.Page
         Random rad = new Random(ConvertDateTimeInt( DateTime.Now));
         while (true)
         {
-            tmpqq = rad.Next(10000000, 100000000);
-            sql = "select Users.Uqq from Users where Uqq ='" + tmpqq + "'";
+            tmpqq = rad.Next(10000000, 100000000);                                //生成8位数字
+            sql = "select Users.Uqq from Users where Uqq ='" + tmpqq + "'";       //检查是否已经存在
             dt = class_Operate.SelectT(sql);
             if (dt.Rows.Count == 0) break;
         }
 
         return tmpqq.ToString();
     }
-    private int ConvertDateTimeInt(System.DateTime time)
+    private int ConvertDateTimeInt(System.DateTime time)                    //生成随机整数作为random的种子            
     {
         System.DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
         return (int)(time - startTime).TotalSeconds;

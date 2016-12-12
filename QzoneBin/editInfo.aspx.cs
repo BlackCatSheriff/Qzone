@@ -13,15 +13,10 @@ public partial class comment : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
        
-       
-
-
-      
 
             if (Request.Cookies["userQQ"] != null && Request.Cookies["passWord"] != null)
             {
-
-
+            
                 //判断qq和密码是否匹配
                 int judge = class_Operate.isRght(Request.Cookies["userQQ"].Value, Request.Cookies["passWord"].Value);
                 if (judge != 1)
@@ -40,12 +35,7 @@ public partial class comment : System.Web.UI.Page
             }
             else
                 Response.Write("<script language='javascript'>window.alert('身份过期，请重新登录！');window.location='Login.aspx'</script>");
-
-        
-
-
-
-
+            
     }
     private void myBind()
     {
@@ -73,9 +63,9 @@ public partial class comment : System.Web.UI.Page
         aAlbum.HRef = "album.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aMessage.HRef = "message.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aLog.HRef = "log.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
-        imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imgbtnSetting.PostBackUrl = "editInfo.aspx";
-        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imbtnPersonality.PostBackUrl = "dynamic.aspx";
         imgBtnHostHead.PostBackUrl = "editInfo.aspx";
 
@@ -135,7 +125,7 @@ public partial class comment : System.Web.UI.Page
     {
         //认为密码一致且合法
         string mm = class_Operate.EncryptToSHA1(txtpwd.Text);
-        string sqluodate = "update Users set Upwd=@pwd where Uqq=@uQQ";
+        string sqluodate = "update Users set Upwd=@pwd where Uqq=@uQQ";    //更新用户信息操作
 
         SqlConnection connection = new SqlConnection(class_Operate.str);
         connection.Open();
@@ -160,7 +150,7 @@ public partial class comment : System.Web.UI.Page
 
     }
 
-    private int updateInfo(string Username, string sex, string birthday,string sign, string qq)
+    private int updateInfo(string Username, string sex, string birthday,string sign, string qq)  //更新用户信息函数
     {
         string sqluodate = "update Users set Unick=@uNike ,Usex=@uSex ,Ubirthday=@uBirthay ,UzoneSign=@sign where Uqq=@uQQ";
 

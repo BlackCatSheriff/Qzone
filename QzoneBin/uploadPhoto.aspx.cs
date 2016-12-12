@@ -10,10 +10,7 @@ public partial class uploadPhoto : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-
         
-       
-
             if (Request.Cookies["userQQ"] != null && Request.Cookies["passWord"] != null)
             {
 
@@ -31,22 +28,11 @@ public partial class uploadPhoto : System.Web.UI.Page
             }
             else
                 Response.Write("<script language='javascript'>window.alert('身份过期，请重新登录！');window.open('Login.aspx');window.close();</script>");
-
-      
-
-
-
-        
-
-
-    
-
-
-
+            
     }
-    private void BindFolder(string qq)
+    private void BindFolder(string qq)                  //绑定指定相册属性
     {
-        string sql = "select Aname from Album where Aqq = '" + qq+"'";
+        string sql = "select Aname from Album where Aqq = '" + qq+"'";          //查询名字
 
         DataTable dt = class_Operate.SelectT(sql);
         //ddlSeleectFoldder.DataTextField = "Sid";
@@ -64,12 +50,12 @@ public partial class uploadPhoto : System.Web.UI.Page
     {
         string folder  = ddlSeleectFoldder.SelectedValue;
         
-        if (folder=="" )
+        if (folder=="" )                                //判断是否已经存在相册，如果不存在就跳转页面去执行创建相册的功能
         {
             Response.Write("<script>alert('请先创建相册！');window.location='creatAlbum.aspx'</script>");
             return;
         }
-        else if (FileUpload1.PostedFile.FileName == "")
+        else if (FileUpload1.PostedFile.FileName == "")  //判断是否上传了空值
         {
             Response.Write("<script>alert('请选择照片！');</script>");
             return;
@@ -77,31 +63,31 @@ public partial class uploadPhoto : System.Web.UI.Page
 
         
         //上传图片
-        String[] Extensions = { "gif", "png", "jpeg", "jpg", "bmp" };
+        String[] Extensions = { "gif", "png", "jpeg", "jpg", "bmp" };               //可上传文件类型
         int FileSize = 2098152;   //2M
-        string Dir = "/img/photoServer";
+        string Dir = "/img/photoServer";                                            //上传目录
         string res = "";
-        string QQ = Request.Cookies["userQQ"].Value;
+        string QQ = Request.Cookies["userQQ"].Value;                                //上传QQ
 
-        string sqlCatch = "select Aid from Album where Aname='"+folder+"'";
+        string sqlCatch = "select Aid from Album where Aname='"+folder+"'";         //上传的照片放在特定相册中
         string folerid = class_Operate.SelectHead(sqlCatch);
-        if(folerid=="")
+        if(folerid=="")                                                              //错误处理
         {
             Response.Write("<script>window.alert('上传失败，请重新上传！');</script>");
             return;
         }
-        int tfolder = Convert.ToInt32(folerid);
-        res = UpFileFun(FileUpload1, Extensions, FileSize, Dir, QQ,tfolder);
+        int tfolder = Convert.ToInt32(folerid);                                     //相册ID
+        res = UpFileFun(FileUpload1, Extensions, FileSize, Dir, QQ,tfolder);        //执行图片上传命令
         if (res != "")
-            imgUserhead.ImageUrl = res;
-        class_Operate.QqGrade(Request.Cookies["userQQ"].Value, 3);
+            imgUserhead.ImageUrl = res;                                             //接收返回的上传状态
+        class_Operate.QqGrade(Request.Cookies["userQQ"].Value, 3);                  //增加等级
         
         
       
     }
 
-
-    private  string UpFileFun(FileUpload Controlfile, string[] FileType, int FileSize, string SaveFileName, string QQ, int folder)
+    
+    private string UpFileFun(FileUpload Controlfile, string[] FileType, int FileSize, string SaveFileName, string QQ, int folder)   //上传图片函数，参数Controlfile-上传控件，FileType -允许上传的类型数组，Filesize 上传图片的大小限制，SaveFileName 保存文件的路径，QQ-上传者qq，folder-上传图片的所属相册
     {
         // string FileDir = Path.GetFileName(Controlfile.PostedFile.FileName);
         string FileDir = Controlfile.PostedFile.FileName;

@@ -13,7 +13,7 @@ public partial class regsuccess : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         
-        if (Session["isFirst"] == null)
+        if (Session["isFirst"] == null)                         //只允许新创建的QQ第一次使用本界面
         {
             Response.Redirect("Regester.aspx");
         }
@@ -46,7 +46,7 @@ public partial class regsuccess : System.Web.UI.Page
     
     private void myBind ()
     {
-        lbluserNick.Text =HttpUtility.UrlDecode(Request.Cookies["userNick"].Value,Encoding.GetEncoding("utf-8"));
+        lbluserNick.Text =HttpUtility.UrlDecode(Request.Cookies["userNick"].Value,Encoding.GetEncoding("utf-8"));    //读取cookies，中文进行编码转换
 
        
         lbluserQQ.Text = Request.Cookies["userQQ"].Value;
@@ -79,7 +79,7 @@ public partial class regsuccess : System.Web.UI.Page
         else
         {
             class_Operate inputcookie = new class_Operate();
-            inputcookie.WriteCookies(userQQ, userNike, "", "");
+            inputcookie.WriteCookies(userQQ, userNike, "", "");                                 //更新cookies
             Response.Write("<script>window.alert('修改成功！');location.href='home.aspx';</script>");
 
         }
@@ -87,9 +87,9 @@ public partial class regsuccess : System.Web.UI.Page
     }
 
    
-    private int updateInfo(string Username,string sex,string birthday,string qq)
+    private int updateInfo(string Username,string sex,string birthday,string qq)     //更新基本资料
     {
-        string sqluodate = "update Users set Unick=@uNike ,Usex=@uSex ,Ubirthday=@uBirthay where Uqq=@uQQ";
+        string sqluodate = "update Users set Unick=@uNike ,Usex=@uSex ,Ubirthday=@uBirthay where Uqq=@uQQ";    //参数化查询语句
 
         SqlConnection connection = new SqlConnection(class_Operate.str);
         connection.Open();

@@ -10,8 +10,8 @@ using System.Web.UI.WebControls;
 
 public partial class comment : System.Web.UI.Page
 {
-    protected string All = "";
-    protected string Today = "";
+    protected string All = "";                          //绑定所有访客数，变量声明供前台使用
+    protected string Today = "";                        //绑定今日访客数，变量声明供前台使用
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Request.QueryString["uqq"] == null)
@@ -29,14 +29,14 @@ public partial class comment : System.Web.UI.Page
         }
         try     //防止uqq正常传值遭到破坏，如果破坏刷新访客主页
         {
-            string today = DateTime.Today.ToString("yyyyMMdd");
-            string sqltoday = "select COUNT(*) from View_Log where LhostQq = '" + Session["HostQQ"].ToString().Trim() + "' and LtimeDay = '" + today + "'";
-            string sqlall = "select COUNT(*) from View_Log where LhostQq = '" + Session["HostQQ"].ToString().Trim() + "'";
+            string today = DateTime.Today.ToString("yyyyMMdd");     //获取当天日期
+            string sqltoday = "select COUNT(*) from View_Log where LhostQq = '" + Session["HostQQ"].ToString().Trim() + "' and LtimeDay = '" + today + "'";             //查询一共访问条数
+            string sqlall = "select COUNT(*) from View_Log where LhostQq = '" + Session["HostQQ"].ToString().Trim() + "'";                                              //查询今日访问条数
             Today = class_Operate.SelectHead(sqltoday);
             All = class_Operate.SelectHead(sqlall);
         IniHeadHost(Session["HostQQ"].ToString().Trim());
         }
-        catch
+        catch   //错误处理，如果uqq被篡改，绑定当前访客账户
         {
             string today = DateTime.Today.ToString("yyyyMMdd");
             string sqltoday = "select COUNT(*) from View_Log where LhostQq = '" + Session["HostQQ"].ToString().Trim() + "' and LtimeDay = '" + today + "'";
@@ -54,8 +54,7 @@ public partial class comment : System.Web.UI.Page
 
             if (Request.Cookies["userQQ"] != null && Request.Cookies["passWord"] != null)
             {
-
-
+                
                 //判断qq和密码是否匹配
                 int judge = class_Operate.isRght(Request.Cookies["userQQ"].Value, Request.Cookies["passWord"].Value);
                 if (judge != 1)
@@ -72,10 +71,7 @@ public partial class comment : System.Web.UI.Page
                 Response.Write("<script language='javascript'>window.alert('身份过期，请重新登录！');window.location='Login.aspx'</script>");
 
         }
-
-
-
-
+        
     }
 
     private int IniHeadHost(string Uqq)
@@ -88,9 +84,9 @@ public partial class comment : System.Web.UI.Page
         aAlbum.HRef = "album.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aMessage.HRef = "message.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aLog.HRef = "log.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
-        imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imgbtnSetting.PostBackUrl = "editInfo.aspx";
-        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imbtnPersonality.PostBackUrl = "dynamic.aspx";
         imgBtnHostHead.PostBackUrl = "editInfo.aspx";
 
@@ -135,7 +131,7 @@ public partial class comment : System.Web.UI.Page
 
     private void LogBindToday (int currentPage)
     {
-
+        //查询今日数据
         try
         {
             string today = DateTime.Today.ToString("yyyyMMdd");
@@ -163,7 +159,7 @@ public partial class comment : System.Web.UI.Page
 
     private void LogBindBefore( int currentPage)
     {
-
+        //查询历史数据
         try
         {
             string today = DateTime.Today.ToString("yyyyMMdd");
@@ -324,7 +320,7 @@ public partial class comment : System.Web.UI.Page
     protected void rptToday_ItemCommand(object source, RepeaterCommandEventArgs e)
     {
         string url= "log.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
-        if (e.CommandName== "Dellog")
+        if (e.CommandName== "Dellog")                   //访客记录删除
         {
             if (Session["HostQQ"].ToString().Trim() != Session["GuestQQ"].ToString().Trim())
             {

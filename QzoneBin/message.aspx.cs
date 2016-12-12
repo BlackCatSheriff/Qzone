@@ -82,9 +82,9 @@ public partial class comment : System.Web.UI.Page
         aAlbum.HRef = "album.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aMessage.HRef = "message.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aLog.HRef = "log.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
-        imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imgbtnSetting.PostBackUrl = "editInfo.aspx";
-        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imbtnPersonality.PostBackUrl = "dynamic.aspx";
         imgBtnHostHead.PostBackUrl = "editInfo.aspx";
 
@@ -142,12 +142,12 @@ public partial class comment : System.Web.UI.Page
 
     private void  HostbindMessage  (int currentPage)
     {
-       
+       //绑定信息
         try
         {
             
-            string sql= "select * from View_MessageFirst where Mqq = '"+Session["HostQQ"].ToString().Trim()+"' order by MpublishTime desc";
-            string sqlhope = "select Uhope from Users where Uqq='" + Session["HostQQ"].ToString().Trim() + "'";
+            string sql= "select * from View_MessageFirst where Mqq = '"+Session["HostQQ"].ToString().Trim()+"' order by MpublishTime desc";         //绑定留言列表
+            string sqlhope = "select Uhope from Users where Uqq='" + Session["HostQQ"].ToString().Trim() + "'";                                     //绑定主人寄语            
             txtHosthope.Text = class_Operate.SelectHead(sqlhope);
 
             DataTable dt = class_Operate.SelectT(sql);
@@ -423,17 +423,17 @@ public partial class comment : System.Web.UI.Page
         }
     }
 
-    private bool PublishNewMessage(string hostQQ, string guestqq,string newContent)
+    private bool PublishNewMessage(string hostQQ, string guestqq,string newContent)  //发表留言，参数hostQQ --目标空间QQ，guestqq--留言者的空间，neaContent -- 留言内容
     {
 
-        string nowTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        string nowTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");  //格式化时间
 
         string sqlconn = class_Operate.str;
 
         SqlConnection connection = new SqlConnection(sqlconn);
         connection.Open();
 
-        string sqlstr = "insert into Message(Mqq,Mguestqq, MpublishTime,Mcontent) values (@uqq,@guestqq,@time,@text)";
+        string sqlstr = "insert into Message(Mqq,Mguestqq, MpublishTime,Mcontent) values (@uqq,@guestqq,@time,@text)";          //插入留言
         SqlCommand cmd = new SqlCommand(sqlstr, connection);
         cmd.Parameters.Clear();
 
@@ -488,7 +488,7 @@ public partial class comment : System.Web.UI.Page
         SqlConnection connection = new SqlConnection(sqlconn);
         connection.Open();
             
-        string sqlstr = "update Users set Uhope=@text where Uqq=@uqq";
+        string sqlstr = "update Users set Uhope=@text where Uqq=@uqq";           //更新主人寄语
             SqlCommand cmd = new SqlCommand(sqlstr, connection);
         cmd.Parameters.Clear();
 

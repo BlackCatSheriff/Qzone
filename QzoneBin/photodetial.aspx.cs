@@ -15,7 +15,7 @@ public partial class photodetial : System.Web.UI.Page
     private string PhotoPath;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Request.QueryString["pid"] == null)
+        if (Request.QueryString["pid"] == null)                 //验证传值
         {
             Response.Write("<script>alert('发生了意想不到的事！');window.close();window.open('','_self');</script>");
         }
@@ -30,17 +30,10 @@ public partial class photodetial : System.Web.UI.Page
 
                 if (!bindData(pid))
                 Response.Write("<script>alert('发生了意想不到的事！');window.close();window.open('','_self');</script>");
-
-
+                
             }
             imgPhoto.ImageUrl = PhotoPath;
-
-
-
-
-
-
-
+            
         }
 
     }

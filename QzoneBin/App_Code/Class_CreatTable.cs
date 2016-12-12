@@ -6,6 +6,7 @@ using System.Web;
 
 /// <summary>
 /// Class_CreatTable 的摘要说明
+/// 生成自定义数据表
 /// </summary>
 public class Class_CreatTable
 {

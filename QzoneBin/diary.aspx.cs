@@ -18,10 +18,10 @@ public partial class comment : System.Web.UI.Page
             Response.Write("<script language='javascript'>window.alert('身份过期，请重新登录！');window.location='Login.aspx'</script>");
             return;
         }
-        if (Request.QueryString["uqq"] == null)
+        if (Request.QueryString["uqq"] == null)                     //验证地址栏传值
         {
 
-            Session["GuestQQ"] = Request.Cookies["userQQ"].Value;
+            Session["GuestQQ"] = Request.Cookies["userQQ"].Value;           //初始化host和gueset
             Session["HostQQ"] = Request.Cookies["userQQ"].Value;
 
         }
@@ -80,9 +80,9 @@ public partial class comment : System.Web.UI.Page
         aAlbum.HRef = "album.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aMessage.HRef = "message.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aLog.HRef = "log.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
-        imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imgbtnSetting.PostBackUrl = "editInfo.aspx";
-        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imbtnPersonality.PostBackUrl = "dynamic.aspx";
         imgBtnHostHead.PostBackUrl = "editInfo.aspx";
 

@@ -19,7 +19,7 @@ public partial class comment : System.Web.UI.Page
             return;
         }
 
-        if (Request.QueryString["uqq"] == null || Request.QueryString["diaryid"] == null)
+        if (Request.QueryString["uqq"] == null || Request.QueryString["diaryid"] == null)     //获取级联传值，进行日志显示
         {
             div1.Visible = false;
        
@@ -77,9 +77,9 @@ public partial class comment : System.Web.UI.Page
         aAlbum.HRef = "album.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aMessage.HRef = "message.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aLog.HRef = "log.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
-        imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imgbtnSetting.PostBackUrl = "editInfo.aspx";
-        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imbtnPersonality.PostBackUrl = "dynamic.aspx";
         imgBtnHostHead.PostBackUrl = "editInfo.aspx";
 
@@ -129,14 +129,14 @@ public partial class comment : System.Web.UI.Page
     }
  
 
-    private void Contentbind()
+    private void Contentbind()              //绑定日志的标题和内容
     {
 
         
 
         try
         {
-
+            //绑定日志的标题和内容
             string sql = "select Dcontent from Diary where Did='"+ Session["Diaryid"].ToString()+ "'";
             string sql1 = "select Dtitle from Diary where Did='" + Session["Diaryid"].ToString() + "'";
 
@@ -168,14 +168,14 @@ public partial class comment : System.Web.UI.Page
         string url = "~/displaydiary.aspx?uqq=" + Request.Cookies["userQQ"].Value + "&diaryid=" + Session["Diaryid"].ToString();
 
 
-        string time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        string time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");                 //格式化日期方便排序
 
         string sqlconn = class_Operate.str;
   
         SqlConnection connection = new SqlConnection(sqlconn);
         connection.Open();
         
-        string sqlstr = "update Diary set Dcontent=@text ,DpublishTime =@time ,Dtitle=@title  where Did='" + Session["Diaryid"].ToString() + "'";
+        string sqlstr = "update Diary set Dcontent=@text ,DpublishTime =@time ,Dtitle=@title  where Did='" + Session["Diaryid"].ToString() + "'";                   //更新日志
         SqlCommand cmd = new SqlCommand(sqlstr, connection);
         cmd.Parameters.Clear();
 
@@ -202,7 +202,7 @@ public partial class comment : System.Web.UI.Page
     protected void btnDelete_Click(object sender, EventArgs e)
     {
         //string url = "~/displaydiary.aspx?uqq=" + Request.Cookies["userQQ"].Value + "&diaryid="+ Session["Diaryid"].ToString();
-        string sqldel = "delete Diary where Did='" + Session["Diaryid"].ToString() + "'";
+        string sqldel = "delete Diary where Did='" + Session["Diaryid"].ToString() + "'";           //删除语句
         if(class_Operate.GO(sqldel)==1)
             Response.Write("<script language='javascript'>window.alert('删除成功');window.location='diary.aspx'</script>");
         else

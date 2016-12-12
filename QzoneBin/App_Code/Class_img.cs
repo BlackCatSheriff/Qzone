@@ -9,6 +9,7 @@ using System.IO;
 
 /// <summary>
 /// Class_img 的摘要说明
+/// 图片上传到服务器
 /// </summary>
 public class Class_img
 {

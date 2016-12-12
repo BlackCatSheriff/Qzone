@@ -82,9 +82,9 @@ public partial class comment : System.Web.UI.Page
         aAlbum.HRef = "album.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aMessage.HRef = "message.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aLog.HRef = "log.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
-        imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imgbtnSetting.PostBackUrl = "editInfo.aspx";
-        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imbtnPersonality.PostBackUrl = "dynamic.aspx";
         imgBtnHostHead.PostBackUrl = "editInfo.aspx";
 
@@ -119,8 +119,7 @@ public partial class comment : System.Web.UI.Page
             {
                 btnUploadImg.Visible = false;
                 btnCreatFolder.Visible = false;
-                
-
+           
             }
             //HttpUtility.UrlDecode(Request.Cookies["userNick"].Value,Encoding.GetEncoding("utf-8"));
            lbtGuestUsername.Text = HttpUtility.UrlDecode(Request.Cookies["userNick"].Value,Encoding.GetEncoding("utf-8"));
@@ -139,16 +138,16 @@ public partial class comment : System.Web.UI.Page
         }
     }
 
-    private void HostbindAlbum(int currentPage)
+    private void HostbindAlbum(int currentPage)             //绑定相册
     {
 
         try
         {
 
-            string sql = "select * from Album where Aqq = '" + Session["HostQQ"].ToString().Trim() + "'order by Aid asc";
+            string sql = "select * from Album where Aqq = '" + Session["HostQQ"].ToString().Trim() + "'order by Aid asc";     //相册绑定语句
             DataTable dt = class_Operate.SelectT(sql);
 
-            PagedDataSource pds = new PagedDataSource();
+            PagedDataSource pds = new PagedDataSource();                    //分页功能
             pds.AllowPaging = true;
             pds.PageSize = 5;
             pds.DataSource = dt.DefaultView;
@@ -230,26 +229,24 @@ public partial class comment : System.Web.UI.Page
         }
 
     }
-
-
-
-
-    protected void btnUploadImg_Click(object sender, EventArgs e)
+    
+    protected void btnUploadImg_Click(object sender, EventArgs e)           
     {
-
+        //打开上传窗口---弹窗形式
         // string url = "uploadPhoto.aspx?uqq=" + Session["HostQQ"].ToString().Trim(); 
         Response.Write("<script language='javascript'>window.open('uploadPhoto.aspx', 'newwindow', 'height=400, width=800, top='+Math.round((window.screen.height-400)/2)+',left='+Math.round((window.screen.width-800)/2)+', toolbar=no,menubar = no, scrollbars = no, resizable = no, location = no, status = no')</script>");
     }
 
     protected void btnCreatFolder_Click(object sender, EventArgs e)
     {
+        //打开创建相册的窗口---弹窗形式
         Response.Write("<script language='javascript'>window.open('creatAlbum.aspx', 'newwindow', 'height=200, width=300, top='+Math.round((window.screen.height-200)/2)+',left='+Math.round((window.screen.width-300)/2)+', toolbar=no,menubar = no, scrollbars = no, resizable = no, location = no, status = no')</script>");
     }
 
     protected void rptDisplayAlbum_ItemCommand(object source, RepeaterCommandEventArgs e)
     {
         string url = "album.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
-        if (e.CommandName == "DelAlbum")
+        if (e.CommandName == "DelAlbum")                            //删除相册操作
         {
             if (Session["HostQQ"].ToString().Trim() != Session["GuestQQ"].ToString().Trim())
             {
@@ -258,12 +255,12 @@ public partial class comment : System.Web.UI.Page
             }
             //解决级联问题再写
         }
-        else if (e.CommandName == "imgbtnJumpPhotos")
+        else if (e.CommandName == "imgbtnJumpPhotos")               //用过地址栏级联传值跳转指定照片
         {
             string jumpurl = "photo.aspx?uqq=" + Session["HostQQ"].ToString().Trim() + "&aid=" + e.CommandArgument.ToString().Trim();
             Response.Write("<script language='javascript'>window.open('" + jumpurl + "')</script>");
         }
-        else if (e.CommandName == "Changename")
+        else if (e.CommandName == "Changename")                     //相册更名
         {
             if (Session["HostQQ"].ToString().Trim() != Session["GuestQQ"].ToString().Trim())
             {
@@ -279,7 +276,7 @@ public partial class comment : System.Web.UI.Page
             }
 
         }
-        else if (e.CommandName == "ConfirmChange")
+        else if (e.CommandName == "ConfirmChange")                          //提交更改
         {
             TextBox txtComment_cs = (TextBox)e.Item.FindControl("txtRename");
             if (txtComment_cs.Text.Trim() != "")

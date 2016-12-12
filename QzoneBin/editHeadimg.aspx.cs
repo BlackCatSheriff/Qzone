@@ -17,19 +17,19 @@ public partial class editHeadimg : System.Web.UI.Page
 
     protected void btnSubImg_Click(object sender, EventArgs e)
     {
-        if(FileUpload1.PostedFile.FileName=="")
+        if(FileUpload1.PostedFile.FileName=="")       //是否有图片
         {
             Response.Write("<script>window.alert('请选择上传图片！');</script>");
             return;
         }
         //上传图片
-        String[] Extensions = { "gif", "png", "jpeg", "jpg", "bmp" };
+        String[] Extensions = { "gif", "png", "jpeg", "jpg", "bmp" };    //允许上传类型
         int FileSize = 2098152;   //2M
-        string Dir = "/img/userHead";
+        string Dir = "/img/userHead";                                   //图片保存路径
         string res = "";
-        string QQ = Request.Cookies["userQQ"].Value;
+        string QQ = Request.Cookies["userQQ"].Value;                    //照片所属QQ
 
-        res = Class_img.UpFileFun(FileUpload1, Extensions, FileSize, Dir, QQ);
+        res = Class_img.UpFileFun(FileUpload1, Extensions, FileSize, Dir, QQ);   //上传函数
 
 
         Response.Write("<script>window.alert('" + res + "');</script>");

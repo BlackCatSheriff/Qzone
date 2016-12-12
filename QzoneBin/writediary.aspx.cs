@@ -14,8 +14,6 @@ public partial class writediary : System.Web.UI.Page
 
         if (Request.Cookies["userQQ"] != null && Request.Cookies["passWord"] != null)
         {
-
-
             //判断qq和密码是否匹配
             int judge = class_Operate.isRght(Request.Cookies["userQQ"].Value, Request.Cookies["passWord"].Value);
             if (judge != 1)
@@ -32,7 +30,7 @@ public partial class writediary : System.Web.UI.Page
 
     }
 
-    protected void btnReturnList_Click(object sender, EventArgs e)
+    protected void btnReturnList_Click(object sender, EventArgs e)    //销毁窗口
     {
        // Response.Write("<script language='javascript'>window.location='diary.aspx'</script>");
         Response.Write("<script language='javascript'>window.close();window.open('','_self');</script>");
@@ -40,7 +38,7 @@ public partial class writediary : System.Web.UI.Page
 
     protected void btnSave_Click(object sender, EventArgs e)
     {
-        string time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        string time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");     
 
         string sqlconn = class_Operate.str;
 
@@ -48,7 +46,7 @@ public partial class writediary : System.Web.UI.Page
         connection.Open();
 
        
-        string sqlstr = "insert into Diary (Dqq,DpublishTime,Dtitle,Dcontent) values (@uqq,@time,@title,@text)";
+        string sqlstr = "insert into Diary (Dqq,DpublishTime,Dtitle,Dcontent) values (@uqq,@time,@title,@text)";        //插入新日志
         SqlCommand cmd = new SqlCommand(sqlstr, connection);
         cmd.Parameters.Clear();
 

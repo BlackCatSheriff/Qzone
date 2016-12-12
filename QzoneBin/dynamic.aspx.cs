@@ -21,8 +21,6 @@ public partial class comment : System.Web.UI.Page
         
             if (Request.Cookies["userQQ"] != null && Request.Cookies["passWord"] != null)
             {
-
-
                 //判断qq和密码是否匹配
                 int judge = class_Operate.isRght(Request.Cookies["userQQ"].Value, Request.Cookies["passWord"].Value);
                 if (judge != 1)
@@ -38,12 +36,6 @@ public partial class comment : System.Web.UI.Page
             }
             else
                 Response.Write("<script language='javascript'>window.alert('身份过期，请重新登录！');window.location='Login.aspx'</script>");
-
-        
-
-
-
-
     }
 
     private int IniHeadHost(string Uqq)
@@ -55,9 +47,9 @@ public partial class comment : System.Web.UI.Page
         aAlbum.HRef = "album.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aMessage.HRef = "message.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aLog.HRef = "log.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
-        imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imgbtnSetting.PostBackUrl = "editInfo.aspx";
-        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imbtnPersonality.PostBackUrl = "dynamic.aspx";
         imgBtnHostHead.PostBackUrl = "editInfo.aspx";
 
@@ -102,7 +94,7 @@ public partial class comment : System.Web.UI.Page
 
         }
     }
-    private void Hostbind(int currentPage)
+    private void Hostbind(int currentPage)          //通过火箭飞的形式从上顶端到top，不需要分页
     {
       
         try
@@ -406,7 +398,7 @@ public partial class comment : System.Web.UI.Page
             Response.Write("<script>window.open('" + jumpUrl + "')</script>");
 
         }
-        else if (e.CommandName == "jumpPhoto")
+        else if (e.CommandName == "jumpPhoto")                  //放大图片跳转页面
         {
             string jumpurl = "photodetial.aspx?pid=" + e.CommandArgument.ToString();
             Response.Write("<script language='javascript'>window.open('" + jumpurl + "', 'newwindow', 'height=800, width=1050, top='+Math.round((window.screen.height-800)/2)+',left='+Math.round((window.screen.width-1050)/2)+', toolbar=no,menubar = no, scrollbars = no, resizable = no, location = no, status = no')</script>");

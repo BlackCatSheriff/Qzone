@@ -56,7 +56,7 @@ public partial class creatAlbum : System.Web.UI.Page
     }
 
 
-    private bool CreatAlbum (string name , string qq)
+    private bool CreatAlbum (string name , string qq)  //创建相册，参数name相册名字，qq创建者的QQ，返回值：成功 TRUE 失败FALSE
     {
 
         
@@ -64,7 +64,7 @@ public partial class creatAlbum : System.Web.UI.Page
 
         SqlConnection connection = new SqlConnection(sqlconn);
         connection.Open();
-        string sqlstr = "insert into Album(AsurfacePath,Aname,Aqq,AsurfaceBelong,Acount) VALUES  (@AsurfacePath,@Aname,@Aqq,@AsurfaceBelong,@Acount)";
+        string sqlstr = "insert into Album(AsurfacePath,Aname,Aqq,AsurfaceBelong,Acount) VALUES  (@AsurfacePath,@Aname,@Aqq,@AsurfaceBelong,@Acount)";              //插入相册数据到数据库
         SqlCommand cmd = new SqlCommand(sqlstr, connection);
         cmd.Parameters.Clear();
         

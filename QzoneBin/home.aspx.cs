@@ -12,8 +12,8 @@ public partial class comment : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Request.QueryString["uqq"] == null)
-        {
+        if (Request.QueryString["uqq"] == null)                                 //获取地址栏的uqq  
+        {                                                                       //如果不存在就规定为当前登录主账号
 
             Session["GuestQQ"] = Request.Cookies["userQQ"].Value;
             Session["HostQQ"] = Request.Cookies["userQQ"].Value;
@@ -21,13 +21,13 @@ public partial class comment : System.Web.UI.Page
         }
         else
         {
-            Session["HostQQ"] = Request.QueryString["uqq"].ToString().Trim();
+            Session["HostQQ"] = Request.QueryString["uqq"].ToString().Trim();   //如果存在，主账号为guest， 访问空间为host
             Session["GuestQQ"] = Request.Cookies["userQQ"].Value;
 
         }
         try     //防止uqq正常传值遭到破坏，如果破坏刷新访客主页
         {
-            IniHeadHost(Session["HostQQ"].ToString().Trim());
+            IniHeadHost(Session["HostQQ"].ToString().Trim());                    //初始化页面控件属性
         }
         catch
         {
@@ -40,7 +40,7 @@ public partial class comment : System.Web.UI.Page
         if (!IsPostBack)
         {
 
-            if (Request.Cookies["userQQ"] != null && Request.Cookies["passWord"] != null)
+            if (Request.Cookies["userQQ"] != null && Request.Cookies["passWord"] != null)             //判断是否用户名、密码匹配
             {
 
 
@@ -74,9 +74,9 @@ public partial class comment : System.Web.UI.Page
         aAlbum.HRef = "album.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aMessage.HRef = "message.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aLog.HRef = "log.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
-        imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imgbtnSetting.PostBackUrl = "editInfo.aspx";
-        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imbtnPersonality.PostBackUrl = "dynamic.aspx";
         imgBtnHostHead.PostBackUrl = "editInfo.aspx";
 
@@ -124,7 +124,7 @@ public partial class comment : System.Web.UI.Page
 
 
 
-            LblAlldak.Text = "已签到：" + Daka(Uqq) + "天";
+            LblAlldak.Text = "已签到：" + Daka(Uqq) + "天";     //签到功能
 
             if (isTodaySign(Uqq))
             {
@@ -154,7 +154,7 @@ public partial class comment : System.Web.UI.Page
     {
       
         try
-        { //某人个
+        { //某个人空间全部动态
             string sqlsay = "select * from View_SayFirst where Sqq='"+ Session["HostQQ"].ToString().Trim() + "'";
             DataTable dtsay = class_Operate.SelectT(sqlsay);
 
@@ -164,12 +164,12 @@ public partial class comment : System.Web.UI.Page
             string sqlphoto = "select * from View_Photo where Pqq='"+ Session["HostQQ"].ToString().Trim() + "'";
             DataTable dtphoto = class_Operate.SelectT(sqlphoto);
 
-            DataTable dt = Class_CreatTable.CreatBigTable(dtsay, dtdiary, dtphoto);
+            DataTable dt = Class_CreatTable.CreatBigTable(dtsay, dtdiary, dtphoto);    //动态生成新表进行查询
 
           
 
 
-            PagedDataSource pds = new PagedDataSource();
+            PagedDataSource pds = new PagedDataSource();                            //使用分页功能
             pds.AllowPaging = true;
             pds.PageSize = 20;
             pds.DataSource = dt.DefaultView;
@@ -257,13 +257,13 @@ public partial class comment : System.Web.UI.Page
 
 
 
-    protected void rptFist_ItemDataBound(object sender, RepeaterItemEventArgs e)
+    protected void rptFist_ItemDataBound(object sender, RepeaterItemEventArgs e)    //内层repeater 绑定。通过外层repeater的绑定事件来激发，外层repeater每行绑定完，都会执行这个bind事件进行内层绑定
     {
         if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
         {
-            DataRowView drvw = (DataRowView)e.Item.DataItem;
+            DataRowView drvw = (DataRowView)e.Item.DataItem;                    //初始化一个具有外层repeater结构的行对象，用来获取行中某一列的值
             int SID;
-            if (drvw["Sid"] == DBNull.Value)
+            if (drvw["Sid"] == DBNull.Value)                                //获取外层repeater本行的唯一标识，共内层repeater使用
                 return;
             else
             {
@@ -275,9 +275,9 @@ public partial class comment : System.Web.UI.Page
 
                 dt = class_Operate.SelectT(sql);
 
-                Repeater rept = (Repeater)e.Item.FindControl("rptSeond");
+                Repeater rept = (Repeater)e.Item.FindControl("rptSeond");       //不能跨过外层repeater直接操作内层repeater，因此需要通过在外层repeater中通过Find命令找到内层repeater来进行操作
 
-                // rept = (Repeater)e.Item.FindControl("RptBook");
+                
 
                 rept.DataSource = dt;
 
@@ -292,7 +292,7 @@ public partial class comment : System.Web.UI.Page
     {
         string url = "home.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
        
-         if (e.CommandName == "imgHeadSecond")
+         if (e.CommandName == "imgHeadSecond")                                      //点击头像跳转到目标界面
         {
             ImageButton imgbtn = (ImageButton)e.Item.FindControl("imgbtnCommenterHead");
             string jumpUrl = imgbtn.PostBackUrl;
@@ -300,10 +300,10 @@ public partial class comment : System.Web.UI.Page
         }
          
     }
-    private bool SubSayComment(string content, string commentQQ, string sayID)
+    private bool SubSayComment(string content, string commentQQ, string sayID)    //发送说说评论，参数content 评论内容，commentQQ 评论者QQ,sayID 评论所属的说说唯一标识
     {
 
-        string nowTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        string nowTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");              //格式化时间，方便排序
 
 
         string sqlconn = class_Operate.str;
@@ -339,10 +339,10 @@ public partial class comment : System.Web.UI.Page
 
 
     }
-    private bool PublishNewSay(string hostQQ, string newContent)
+    private bool PublishNewSay(string hostQQ, string newContent)                  //发送说说，参数hostQQ 发送者QQ，newContent 发送内容
     {
 
-        string nowTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        string nowTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");              //格式化日期，方便排序
 
         string sqlconn = class_Operate.str;
 
@@ -350,7 +350,7 @@ public partial class comment : System.Web.UI.Page
         connection.Open();
         string sqlstr = "insert into Say(Sqq,SpublishTime,SgoodCounts,Scontent) VALUES  (@Sqq,@SpublishTime,@SgoodCounts,@Scontent)";
         SqlCommand cmd = new SqlCommand(sqlstr, connection);
-        cmd.Parameters.Clear();
+        cmd.Parameters.Clear();                                                 //清空查询参数
 
 
 
@@ -379,7 +379,7 @@ public partial class comment : System.Web.UI.Page
     }
     protected void rptFist_ItemCommand(object source, RepeaterCommandEventArgs e)
     {
-        string url = "home.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        string url = "home.aspx?uqq=" + Session["HostQQ"].ToString().Trim();    //刷新网站的网址
         if (e.CommandName == "FirstReply")
         {
             try
@@ -544,26 +544,26 @@ public partial class comment : System.Web.UI.Page
 
     }
 
-    private  string Daka(string qq)
+    private  string Daka(string qq)                  //查询qq的已经签到天数
     {
         string sqldakad = "select Usignin from Users where Uqq='" + qq + "'";
         return class_Operate. SelectHead(sqldakad);
     }
-    private  bool isTodaySign(string qq)
+    private  bool isTodaySign(string qq)            //检查当前账号今天是否已经签到,返回当日是否可以签到
     {
-        string nowTime = DateTime.Now.ToString("yyyy-MM-dd");
-        string sqlis = "select UsignNow from Users where Uqq='" + qq + "'";
+        string nowTime = DateTime.Now.ToString("yyyy-MM-dd");           //格式化时间，用来和当前时间进行对比，判断今日是否签到过
+        string sqlis = "select UsignNow from Users where Uqq='" + qq + "'";         //查询最后一次签到时间
         string sqlnow =class_Operate. SelectHead(sqlis);
-        if (nowTime == sqlnow)
+        if (nowTime == sqlnow)                                          //是否相同
             return false;
         else
             return true;
     }
-    private  bool SignNow(string qq)
+    private  bool SignNow(string qq)                //签到功能，返回是否签到成功
     {
-        string nowTime = DateTime.Now.ToString("yyyy-MM-dd");
-        string sqluptae = "update Users set UsignNow='" + nowTime + "' ,Usignin+=1 where Uqq='" + qq + "'";
-        if (class_Operate. GO(sqluptae) == 1)
+        string nowTime = DateTime.Now.ToString("yyyy-MM-dd");           //格式化时间存入数据库，方便下一次比较
+        string sqluptae = "update Users set UsignNow='" + nowTime + "' ,Usignin+=1 where Uqq='" + qq + "'";         //更新数据库签到时间
+        if (class_Operate. GO(sqluptae) == 1)       
             return true;
         else
             return false;

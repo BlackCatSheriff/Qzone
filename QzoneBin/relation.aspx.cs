@@ -65,12 +65,9 @@ public partial class comment : System.Web.UI.Page
             }
             else
                 Response.Write("<script language='javascript'>window.alert('身份过期，请重新登录！');window.location='Login.aspx'</script>");
-
+        
         }
-
-
-
-
+        
     }
 
     private int IniHeadHost(string Uqq)
@@ -81,9 +78,9 @@ public partial class comment : System.Web.UI.Page
         aAlbum.HRef = "album.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aMessage.HRef = "message.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aLog.HRef = "log.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
-        imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imgbtnSetting.PostBackUrl = "editInfo.aspx";
-        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imbtnPersonality.PostBackUrl = "dynamic.aspx";
         imgBtnHostHead.PostBackUrl = "editInfo.aspx";
 
@@ -112,7 +109,7 @@ public partial class comment : System.Web.UI.Page
             DataTable dt = new DataTable();
             dt.Load(sdr);
             connection.Close();
-            if (Uqq != Session["GuestQQ"].ToString().Trim())  //验证是否自己空间
+            if (Uqq != Session["GuestQQ"].ToString().Trim())  //验证是否自己空间  错误处理
             {
                 Response.Write("<script language='javascript'>window.alert('别淘气！');window.close();window.open('','_self');</script>");
                 return 0;
@@ -132,11 +129,11 @@ public partial class comment : System.Web.UI.Page
     }
 
     private void Followbind(int currentPage)
-    {
+    {//关注好友列表
 
         try
         {
-            string sqlFollow = "select * from View_Relationship where RhostQq='" + Session["HostQQ"].ToString().Trim() + "' and Rstate='1' ";
+            string sqlFollow = "select * from View_Relationship where RhostQq='" + Session["HostQQ"].ToString().Trim() + "' and Rstate='1' ";               //查询关注好友语句
             
             DataTable dt = class_Operate.SelectT(sqlFollow);
 
@@ -160,7 +157,7 @@ public partial class comment : System.Web.UI.Page
     }
     private void Recommandbind(int currentPage)
     {
-
+        //好友推荐
         try
         {
             
@@ -190,7 +187,7 @@ public partial class comment : System.Web.UI.Page
     }
 
     private void Searchbind (int currentPage)
-    {
+    {//模糊搜索好友QQ号
 
         try
         {
@@ -443,16 +440,16 @@ public partial class comment : System.Web.UI.Page
 
     protected void rptFriendsList_ItemCommand(object source, RepeaterCommandEventArgs e)
     {
-        if(e.CommandName== "Unfollow")
+        if(e.CommandName== "Unfollow")    //取消关注
         {
-            string sqlundollow = "delete from  Relation  where RhostQq='" + Session["HostQQ"].ToString().Trim() + "' and RguestQq='" + e.CommandArgument.ToString() + "' and Rstate='1'";
+            string sqlundollow = "delete from  Relation  where RhostQq='" + Session["HostQQ"].ToString().Trim() + "' and RguestQq='" + e.CommandArgument.ToString() + "' and Rstate='1'";           //从数据库中删除关系
             if(class_Operate.GO(sqlundollow)==1)
                 Response.Write("<script language='javascript'>window.alert('成功取消关注！');window.location='relation.aspx'</script>");
             else
                 Response.Write("<script language='javascript'>window.alert('操作失败，请重试！');window.location='relation.aspx'</script>");
 
         }
-        if(e.CommandName== "jumphome")
+        if(e.CommandName== "jumphome")                      //跳转目标好友空间
         {
             ImageButton imgbtn = (ImageButton)e.Item.FindControl("imgbtnFriend");
             Response.Write("<script language='javascript'>window.open('"+imgbtn.PostBackUrl+"', 'newwindow', 'height=400, width=800, top='+Math.round((window.screen.height-400)/2)+',left='+Math.round((window.screen.width-800)/2)+', toolbar=no,menubar = no, scrollbars = no, resizable = no, location = no, status = no')</script>");
@@ -461,13 +458,13 @@ public partial class comment : System.Web.UI.Page
 
     protected void rptSearchList_ItemCommand(object source, RepeaterCommandEventArgs e)
     {
-        if(e.CommandName== "Follow")
+        if(e.CommandName== "Follow")  // 关注好友   发起人直接与被关注好友建立关注关系，同时被关注人也将受到关注人的关注消息   数据库方面：发起一次关注好友的请求，创建两条数据，一条为当前发起人和被关好友的关系建立，两一条为被关注还有和发起人的关系建立
         {
             //string sqlfollow1 = "update Relation set Rstate=0 where RhostQq='" + Session["HostQQ"].ToString().Trim() + "' and RguestQq='" + e.CommandArgument.ToString() + "' ";
 
-            string sqlfollow1 = "insert into Relation(RhostQq,RguestQq,Rstate) values('"+ Session["HostQQ"].ToString().Trim() + "','"+e.CommandArgument.ToString()+"','1')";
+            string sqlfollow1 = "insert into Relation(RhostQq,RguestQq,Rstate) values('"+ Session["HostQQ"].ToString().Trim() + "','"+e.CommandArgument.ToString()+"','1')";      //建立发起人和关注人的关系
 
-            string sqlfollow2= "insert into Relation(RguestQq,RhostQq,Rstate) values('" + Session["HostQQ"].ToString().Trim() + "','" + e.CommandArgument.ToString() + "','0')";
+            string sqlfollow2= "insert into Relation(RguestQq,RhostQq,Rstate) values('" + Session["HostQQ"].ToString().Trim() + "','" + e.CommandArgument.ToString() + "','0')";    //建立被关注人和发起人的关系 
             if (class_Operate.GO(sqlfollow1) == 1 && class_Operate.GO(sqlfollow2)==1)
                 Response.Write("<script language='javascript'>window.alert('关注成功！');window.location='relation.aspx'</script>");
             else
@@ -478,7 +475,7 @@ public partial class comment : System.Web.UI.Page
 
     protected void rptRecommand_ItemCommand(object source, RepeaterCommandEventArgs e)
     {
-        if (e.CommandName == "Follow")
+        if (e.CommandName == "Follow")              //关注功能
         {
            
             string sqlfollow1 = "insert into Relation(RhostQq,RguestQq,Rstate) values('" + Session["HostQQ"].ToString().Trim() + "','" + e.CommandArgument.ToString() + "','1')";

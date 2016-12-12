@@ -21,10 +21,10 @@ public partial class comment : System.Web.UI.Page
             return;
         }
 
-        if (Request.QueryString["uqq"] == null)
+        if (Request.QueryString["uqq"] == null)                                 //验证地址栏传值
             {
             
-               Session["GuestQQ"] = Request.Cookies["userQQ"].Value;
+               Session["GuestQQ"] = Request.Cookies["userQQ"].Value;            //分配host和guest 
                Session["HostQQ"] = Request.Cookies["userQQ"].Value;
                 
             }
@@ -74,7 +74,7 @@ public partial class comment : System.Web.UI.Page
 
 
 
-    private int IniHeadHost(string Uqq)
+    private int IniHeadHost(string Uqq)                 //初始化界面控件属性
     {
         aHome.HRef= "home.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aSay.HRef= "comment.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
@@ -82,9 +82,9 @@ public partial class comment : System.Web.UI.Page
         aAlbum.HRef= "album.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aMessage.HRef= "message.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
         aLog.HRef= "log.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
-        imgbutFriends.PostBackUrl= "relation.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+       imgbutFriends.PostBackUrl = "relation.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imgbtnSetting.PostBackUrl = "editInfo.aspx";
-        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        imgbtnMyhome.PostBackUrl = "home.aspx?uqq=" + Session["GuestQQ"].ToString().Trim();
         imbtnPersonality.PostBackUrl = "dynamic.aspx";
         imgBtnHostHead.PostBackUrl = "editInfo.aspx";
 
@@ -132,7 +132,7 @@ public partial class comment : System.Web.UI.Page
         }
      }
 
-    private void  HostbindSay (int currentPage)
+    private void  HostbindSay (int currentPage)         //绑定界面数据
     {
        
         try
@@ -140,7 +140,7 @@ public partial class comment : System.Web.UI.Page
             string sql = "select * from View_SayFirst where sqq='"+ Session["HostQQ"].ToString().Trim() + "' order by SpublishTime desc";
             DataTable dt = class_Operate.SelectT(sql);
           
-            PagedDataSource pds = new PagedDataSource();
+            PagedDataSource pds = new PagedDataSource();                //分页
             pds.AllowPaging = true;
             pds.PageSize = 10;
             pds.DataSource = dt.DefaultView;
@@ -158,7 +158,7 @@ public partial class comment : System.Web.UI.Page
 
 
         }
-    }
+    }    
 
 
     protected void btnFirst_Click(object sender, EventArgs e)
@@ -226,8 +226,8 @@ public partial class comment : System.Web.UI.Page
 
     protected void rptFist_ItemCommand(object source, RepeaterCommandEventArgs e)
     {
-        string url = "comment.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
-        if (e.CommandName== "FirstReply")
+        string url = "comment.aspx?uqq=" + Session["HostQQ"].ToString().Trim();    //页面刷新网址
+        if (e.CommandName== "FirstReply")        //说说回复
         {
             try
             {
@@ -242,7 +242,7 @@ public partial class comment : System.Web.UI.Page
                 Response.Write("抱歉，回复失败请刷新"+ex);
             }
         }
-        else if(e.CommandName== "FirstSubSay")
+        else if(e.CommandName== "FirstSubSay")        //评论说说
         {
             TextBox txtComment_cs = (TextBox)e.Item.FindControl("txtComment");
             if(txtComment_cs.Text.Trim()!= "")
@@ -260,16 +260,16 @@ public partial class comment : System.Web.UI.Page
                 Response.Write("<script language='javascript'>window.alert('留几句话呗，空着多不好~');window.location='" + url + "'</script>");
             }
         }
-        else if(e.CommandName== "DelFirst")
+        else if(e.CommandName== "DelFirst")    //删除说说
         {
 
-            if (Session["HostQQ"].ToString().Trim() != Session["GuestQQ"].ToString().Trim())
+            if (Session["HostQQ"].ToString().Trim() != Session["GuestQQ"].ToString().Trim())            //判断是否有删除权限
             {
                 Response.Write("<script language='javascript'>window.alert('无权操作！');window.location='" + url + "'</script>");
                 return;
             }
 
-            string sqlDelSay = "delete from Say where Sid='"+e.CommandArgument.ToString()+"'";
+            string sqlDelSay = "delete from Say where Sid='"+e.CommandArgument.ToString()+"'";        //删除sql
             if(class_Operate.GO(sqlDelSay) ==1)
                 Response.Write("<script language='javascript'>window.alert('说说删除成功！');window.location='" + url + "'</script>");
             else
@@ -277,7 +277,7 @@ public partial class comment : System.Web.UI.Page
 
 
         }
-        else if(e.CommandName== "FirstGood")
+        else if(e.CommandName== "FirstGood")                                                        //点赞功能
         {
             string sqladdgood = "update Say set SgoodCounts+=1 where Sid='" + e.CommandArgument.ToString() + "'";
             if(class_Operate.GO(sqladdgood)==1)
@@ -287,19 +287,19 @@ public partial class comment : System.Web.UI.Page
 
 
         }
-        else if(e.CommandName== "FirstTrans")
+        else if(e.CommandName== "FirstTrans")                                                   //说说转发功能
         {
-            if(Session["GuestQQ"].ToString().Trim()== Session["HostQQ"].ToString().Trim())
+            if(Session["GuestQQ"].ToString().Trim()== Session["HostQQ"].ToString().Trim())      //限制自己转载自己
             {
                 Response.Write("<script language='javascript'>window.alert('自己不能转载自己哦！');window.location='" + url + "''</script>");
 
             }
             else
             {
-                string sqltranscontent = "select Scontent from Say where Sid='" + e.CommandArgument.ToString() + "'";
+                string sqltranscontent = "select Scontent from Say where Sid='" + e.CommandArgument.ToString() + "'";     //找出要转发说说的内容
                 string tranScontent = class_Operate.SelectHead(sqltranscontent);
 
-                if (PublishNewSay(Session["GuestQQ"].ToString().Trim(), tranScontent))
+                if (PublishNewSay(Session["GuestQQ"].ToString().Trim(), tranScontent))                          //把要转发的说说写入转发者的空间中
 
                     Response.Write("<script language='javascript'>window.alert('转载成功！');window.location='" + url + "''</script>");
                 else
@@ -308,7 +308,7 @@ public partial class comment : System.Web.UI.Page
             }
 
         }
-        else if(e.CommandName=="imgHeadFirst")
+        else if(e.CommandName=="imgHeadFirst")                                          //跳转查看这个头像好友的空间
         {
             ImageButton imgbtn = (ImageButton)e.Item.FindControl("imgbtnHostHead");
             string jumpUrl = imgbtn.PostBackUrl;
@@ -391,22 +391,22 @@ public partial class comment : System.Web.UI.Page
     protected void rptSeond_ItemCommand(object source, RepeaterCommandEventArgs e)
     {
         string url = "comment.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
-        if (e.CommandName== "DelSecond")
+        if (e.CommandName== "DelSecond")                                      //评论删除
         {
             // Response.Write("<script language='javascript'>window.alert('Hahaha~');</script>");
-            if (Session["HostQQ"].ToString().Trim() != Session["GuestQQ"].ToString().Trim())
+            if (Session["HostQQ"].ToString().Trim() != Session["GuestQQ"].ToString().Trim())   //判断是否有删除权限
             {
                 Response.Write("<script language='javascript'>window.alert('无权操作！');window.location='" + url + "'</script>");
                 return;
             }
-            string sqlDelSay = "delete from SayComment where Cid='"+e.CommandArgument.ToString()+"'";
+            string sqlDelSay = "delete from SayComment where Cid='"+e.CommandArgument.ToString()+"'";   //执行删除操作
             if (class_Operate.GO(sqlDelSay) == 1)
                 Response.Write("<script language='javascript'>window.alert('评论删除成功！');window.location='" + url + "'</script>");
             else
                 Response.Write("<script language='javascript'>window.alert('评论删除失败！');window.location='" + url + "'</script>");
 
         }
-        else if(e.CommandName== "imgHeadSecond")
+        else if(e.CommandName== "imgHeadSecond")                                    //查看空间
             {
               ImageButton imgbtn = (ImageButton)e.Item.FindControl("imgbtnCommenterHead");
             string jumpUrl = imgbtn.PostBackUrl;
@@ -416,7 +416,7 @@ public partial class comment : System.Web.UI.Page
 
     protected void btnSubSay_Click(object sender, EventArgs e)
     {
-        string url = "comment.aspx?uqq=" + Session["HostQQ"].ToString().Trim();
+        string url = "comment.aspx?uqq=" + Session["HostQQ"].ToString().Trim();                 //刷新网址
         if (txtNewSay.Text.Trim ()=="")
         {
             Response.Write("<script language='javascript'>window.alert('留几句话呗，空着多不好~');</script>");

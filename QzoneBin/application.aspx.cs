@@ -17,8 +17,7 @@ public partial class comment : System.Web.UI.Page
 
             if (Request.Cookies["userQQ"] != null && Request.Cookies["passWord"] != null)
             {
-
-
+                
                 //判断qq和密码是否匹配
                 int judge = class_Operate.isRght(Request.Cookies["userQQ"].Value, Request.Cookies["passWord"].Value);
                 if (judge != 1)
@@ -34,10 +33,7 @@ public partial class comment : System.Web.UI.Page
                 Response.Write("<script language='javascript'>window.alert('身份过期，请重新登录！');window.location='Login.aspx'</script>");
 
         }
-
-
-
-
+        
     }
 
   
@@ -48,7 +44,7 @@ public partial class comment : System.Web.UI.Page
         try
         {
 
-            string sql = "select * from View_Relationship where RhostQq='"+ Request.Cookies["userQQ"].Value + "' and Rstate='0'";
+            string sql = "select * from View_Relationship where RhostQq='"+ Request.Cookies["userQQ"].Value + "' and Rstate='0'";    //绑定你被谁关注
             DataTable dt = class_Operate.SelectT(sql);
 
             PagedDataSource pds = new PagedDataSource();
@@ -136,9 +132,9 @@ public partial class comment : System.Web.UI.Page
 
     protected void rptApply_ItemCommand(object source, RepeaterCommandEventArgs e)
     {
-         if(e.CommandName== "Follow")
+         if(e.CommandName== "Follow")     //关注
         {
-            string sqlupdate = "update Relation set Rstate=1 where RhostQq='" + Session["HostQQ"].ToString().Trim() + "' and RguestQq='" + e.CommandArgument.ToString() + "' ";
+            string sqlupdate = "update Relation set Rstate=1 where RhostQq='" + Session["HostQQ"].ToString().Trim() + "' and RguestQq='" + e.CommandArgument.ToString() + "' ";     //更改关系，确立关注关系
             if(class_Operate.GO(sqlupdate)==1)
             {
                 Response.Write("<script language='javascript'>alert('关注成功！互粉成功！');window.location='application.aspx'</script>");

@@ -10,26 +10,23 @@ using System.Web.UI.WebControls;
 public partial class photo : System.Web.UI.Page
 {
     //string url = "photo.aspx?uqq=" + Session["HostQQ"].ToString().Trim() + "&aid=" + Session["albumid"].ToString().Trim();
-    protected string ablbumName;
+    protected string ablbumName;     //留给前台调用，需声明protected 类型
     protected void Page_Load(object sender, EventArgs e)
     {
         //    ablbumName
-
-
-
+        
         if (Request.Cookies["userQQ"] == null)
         {
             Response.Write("<script language='javascript'>window.alert('身份过期，请重新登录！');window.location='Login.aspx'</script>");
             return;
         }
 
-        if (Request.QueryString["uqq"] == null || Request.QueryString["aid"] ==null)
+        if (Request.QueryString["uqq"] == null || Request.QueryString["aid"] ==null)                //验证地址栏传值
         {
             div1.Visible = false;
             divTool.Visible = false;
             div404.Visible = true;
            
-
            // Response.Write("<script language='javascript'>window.alert('非法访问！');window.close();window.open('','_self');</script>");
             return;
 
@@ -39,8 +36,6 @@ public partial class photo : System.Web.UI.Page
             Session["HostQQ"] = Request.QueryString["uqq"].ToString().Trim();
             Session["GuestQQ"] = Request.Cookies["userQQ"].Value;
             Session["albumid"] = Request.QueryString["aid"].ToString().Trim();
-
-
         }
         
         if (!IsPostBack)
@@ -48,8 +43,6 @@ public partial class photo : System.Web.UI.Page
 
             if (Request.Cookies["userQQ"] != null && Request.Cookies["passWord"] != null)
             {
-
-
                 //判断qq和密码是否匹配
                 int judge = class_Operate.isRght(Request.Cookies["userQQ"].Value, Request.Cookies["passWord"].Value);
                 if (judge != 1)
@@ -60,18 +53,14 @@ public partial class photo : System.Web.UI.Page
                 }
                 string sqlalbumname = "select Aname from Album where Aid='" + Session["albumid"].ToString().Trim() + "'";
                 ablbumName = class_Operate.SelectHead(sqlalbumname);
-
-
-
+                
                 HostbindPhoto(1);
             }
             else
                 Response.Write("<script language='javascript'>window.alert('身份过期，请重新登录！');window.location='Login.aspx'</script>");
 
         }
-
         
-
     }
     
 
@@ -174,13 +163,11 @@ public partial class photo : System.Web.UI.Page
 
 
     }
-    private void HostbindPhoto(int currentPage)
+    private void HostbindPhoto(int currentPage)                 //初始化绑定照片
     {
-
         try
         {
-            
-            string sql = "select * from Photo where PfolderID = '" + Session["albumid"].ToString().Trim() + "' order by Ptime desc";
+            string sql = "select * from Photo where PfolderID = '" + Session["albumid"].ToString().Trim() + "' order by Ptime desc";                //查询照片语句
             DataTable dt = class_Operate.SelectT(sql);
 
             PagedDataSource pds = new PagedDataSource();
@@ -268,7 +255,7 @@ public partial class photo : System.Web.UI.Page
     }
 
 
-    protected void btnexit_Click(object sender, EventArgs e)
+    protected void btnexit_Click(object sender, EventArgs e)   //退出
     {
         Response.Write("<script language='javascript'>window.alert('别淘气！');window.close();window.open('','_self');</script>");
     }
