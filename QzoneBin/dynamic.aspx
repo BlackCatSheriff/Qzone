@@ -14,9 +14,59 @@ a:link,a:visited{
 a:hover{
  text-decoration:underline;  /*鼠标放上去有下划线*/
 }
+
+#imgtop {
+    display:block;
+    position:absolute;
+    right:0;
+    bottom:0;
+}
+
     </style>
     
- 
+    <script src="js/jquery-3.1.1.min.js"></script>
+ <script >
+
+     
+     $(function () {
+         //获取要定位元素距离浏览器顶部的距离
+         var navH = $("#imgtop").offset().top;
+         //滚动条事件
+         $(window).scroll(function () {
+             //获取滚动条的滑动距离
+             var scroH = $(this).scrollTop();
+             //滚动条的滑动距离大于等于定位元素距离浏览器顶部的距离，就固定，反之就不固定
+             if (scroH >= navH) {
+                 $("#imgtop").css({ "position": "fixed", "bottom": 0, "right": 0, "background": "#ffffff", "border-bottom": "1px solid #e2e2e2" });
+             }
+             else if (scroH < navH) {
+                 $("#imgtop").css({ "position": "absolute", "bottom": 0, "right": 0, "background": "transparent", "border": "none" });
+             }
+         })
+     })
+
+     //返回顶部
+     window.onload = function () {
+         var timer = null;
+         var box = document.getElementById("imgtop");
+         box.onclick = function () {
+             cancelAnimationFrame(timer);
+             timer = requestAnimationFrame(function fn() {
+                 var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+                 if (oTop > 0) {
+                     document.body.scrollTop = document.documentElement.scrollTop = oTop - 100;
+                     timer = requestAnimationFrame(fn);
+                 }
+                 else {
+                     cancelAnimationFrame(timer);
+                 }
+             });
+         };
+     }
+
+
+ </script>
+
 
 </head>
 <body>
@@ -24,6 +74,11 @@ a:hover{
 
     <form id="form1" runat="server">
     <div >
+
+        <!-- TOp飞-->
+        <span id="imgtop"><p>Top</p><img   src="img/boot.png" /></span>
+
+       
 
                <div style="background: #1F1F1F; height: 40px; font-weight: bold; font-size: 20px; color: white; font-family: Verdana">
             
@@ -174,7 +229,7 @@ a:hover{
 
 
 
-        <div  align="center"><img src="img/boot.png" /></div>
+       
         <em>Copyright © Sky</em>
 
     </div>
